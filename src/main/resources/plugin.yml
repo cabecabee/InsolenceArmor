@@ -1,8 +1,8 @@
-name: HiddenArmor
+name: InsolenceArmor
 version: '${project.version}'
-main: me.kteq.hiddenarmor.HiddenArmor
-api-version: 1.16
-authors: [ Kteq ]
+main: me.cabeca.insolencearmor.HiddenArmor
+api-version: 26.2
+authors: [ Cabeca ]
 description: Let players hide their armor and show off their skins
 depend: [ProtocolLib]
 commands:

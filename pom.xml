@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.kteq</groupId>
-    <artifactId>hiddenarmor</artifactId>
-    <version>1.2.0</version>
+    <artifactId>insolencearmor</artifactId>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>HiddenArmor</name>
+    <name>InsolenceArmor</name>
 
     <description>Hide players armor to show off their skins</description>
     <properties>
@@ -46,45 +46,29 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.2.0</version>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+
                 <executions>
                     <execution>
-                        <id>copy-files-on-build</id>
+
                         <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
+
                         <configuration>
-                            <outputDirectory>${RESOURCE-PATH}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/target</directory>
-                                    <include>${project.artifactId}-${project.version}.jar</include>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
+                            <target>
+                                <copy
+                                        file="${project.build.directory}/${project.build.finalName}.jar"
+                                        todir="C:\Users\Usuario\OneDrive\Desktop\better-vanish server\plugins" />
+                            </target>
                         </configuration>
+
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.1.0</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>read-project-properties</goal>
-                        </goals>
-                        <configuration>
-                            <files>
-                                <file>project.properties</file>
-                            </files>
-                        </configuration>
-                    </execution>
-                </executions>
+
             </plugin>
 
         </plugins>
@@ -112,17 +96,22 @@
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.16.5-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
+            <dependency>
+                <groupId>org.spigotmc</groupId>
+                <artifactId>spigot-api</artifactId>
+                <version>26.2-R0.1-SNAPSHOT</version>
+                <scope>provided</scope>
+            </dependency>
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
             <version>5.3.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.13.0</version> <!-- Use the latest stable version -->
         </dependency>
     </dependencies>
 </project>
