@@ -17,12 +17,10 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-
 public class PlayerManager implements ConfigHolder {
     private final HiddenArmor plugin;
     private final ArmorUpdateHandler armorUpdater;
     private final MessageHandler messageHandler;
-
 
     private File enabledPlayersFile = null;
     private FileConfiguration enabledPlayersConfig;
@@ -33,6 +31,7 @@ public class PlayerManager implements ConfigHolder {
     private final Set<Predicate<Player>> forceDisablePredicates = new HashSet<>();
     private final Set<Predicate<Player>> forceEnablePredicates = new HashSet<>();
 
+    private final Map<UUID, String> pumpkinHelmetPlayers = new HashMap<>();
 
     public PlayerManager(HiddenArmor plugin) {
         this.plugin = plugin;
@@ -96,6 +95,46 @@ public class PlayerManager implements ConfigHolder {
         return !hidden;
     }
 
+
+    public void togglePumpkinHelmet(Player player, String pumpkinName, boolean inform) {
+        if (isPumpkinHelmetEnabled(player)) {
+            disablePumpkinHelmet(player, inform);
+        } else {
+            enablePumpkinHelmet(player, pumpkinName, inform);
+        }
+    }
+
+    public void enablePumpkinHelmet(Player player, String pumpkinName, boolean inform) {
+        if (isPumpkinHelmetEnabled(player)) return;
+        if (pumpkinName == null || pumpkinName.trim().isEmpty()) return;
+
+        pumpkinHelmetPlayers.put(player.getUniqueId(), pumpkinName);
+
+        if (inform) {
+            player.sendMessage("§aPumpkin helmet ativada: §f" + pumpkinName);
+        }
+        armorUpdater.updatePlayer(player);
+    }
+
+    public void disablePumpkinHelmet(Player player, boolean inform) {
+        if (!isPumpkinHelmetEnabled(player)) return;
+
+        pumpkinHelmetPlayers.remove(player.getUniqueId());
+
+        if (inform) {
+            player.sendMessage("§cPumpkin helmet desativada.");
+        }
+        armorUpdater.updatePlayer(player);
+    }
+
+    public boolean isPumpkinHelmetEnabled(Player player) {
+        return pumpkinHelmetPlayers.containsKey(player.getUniqueId());
+    }
+
+    public String getPumpkinHelmetName(Player player) {
+        return pumpkinHelmetPlayers.getOrDefault(player.getUniqueId(), "Pumpkin");
+    }
+
     private void registerDefaultPredicates() {
         forceDisablePredicates.add(player -> player.getGameMode().equals(GameMode.CREATIVE));
         forceDisablePredicates.add(player -> player.isInvisible() && !invisibleAlwaysHideGear);
@@ -116,7 +155,8 @@ public class PlayerManager implements ConfigHolder {
 
     private void loadEnabledPlayers() {
         loadEnabledPlayersConfig();
-        this.enabledPlayersUUID = enabledPlayersConfig.getStringList("enabled-players").stream().map(UUID::fromString).collect(Collectors.toSet());
+        this.enabledPlayersUUID = enabledPlayersConfig.getStringList("enabled-players")
+                .stream().map(UUID::fromString).collect(Collectors.toSet());
     }
 
     private void loadEnabledPlayersConfig() {

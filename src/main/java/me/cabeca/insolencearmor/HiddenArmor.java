@@ -2,9 +2,7 @@ package me.cabeca.insolencearmor;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import me.cabeca.insolencearmor.command.HiddenArmorTabCompleter;
-import me.cabeca.insolencearmor.command.HiddenArmorCommand;
-import me.cabeca.insolencearmor.command.ToggleArmorCommand;
+import me.cabeca.insolencearmor.command.*;
 import me.cabeca.insolencearmor.handler.ArmorPlaceholderHandler;
 import me.cabeca.insolencearmor.handler.ArmorUpdateHandler;
 import me.cabeca.insolencearmor.handler.MessageHandler;
@@ -58,6 +56,10 @@ public final class HiddenArmor extends JavaPlugin {
                 .setPermission("hiddenarmor")
                 .setPermissionRequired(false)
                 .setTabCompleter(new HiddenArmorTabCompleter(this));
+        new TogglePumpkinCommand(this, "togglepumpkin")
+                .setPermission("hiddenarmor")
+                .setPermissionRequired(false)
+                .setTabCompleter(new TogglePumpkinTabCompleter());
 
         // Register ProtocolLib packet listeners
         protocolManager.addPacketListener(new SetSlotPacketListener(this, packetIndexMapper));

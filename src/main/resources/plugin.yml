@@ -11,3 +11,6 @@ commands:
     aliases: [ha, armor]
   togglearmor:
     description: "Toggles armor visibility."
+  togglepumpkin:
+      description: "Toggles a fake pumpkin helmet appearance."
+      usage: "/togglepumpkin <name> OR /togglepumpkin <player> <name>"

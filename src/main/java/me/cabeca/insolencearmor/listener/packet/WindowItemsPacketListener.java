@@ -9,8 +9,12 @@ import me.cabeca.insolencearmor.handler.ArmorPlaceholderHandler;
 import me.cabeca.insolencearmor.manager.PlayerManager;
 import me.cabeca.insolencearmor.util.protocol.PacketFields;
 import me.cabeca.insolencearmor.util.protocol.PacketIndexMapper;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
@@ -32,20 +36,40 @@ public class WindowItemsPacketListener extends PacketAdapter {
 
     @Override
     public void onPacketSending(PacketEvent event) {
-        Player player = event.getPlayer();
-        if (playerManager.isArmorVisible(player)) return;
-
+        Player viewer = event.getPlayer();
         PacketContainer packet = event.getPacket();
+
         if (!packet.getIntegers().read(WINDOW_ID_INDEX).equals(0)) return;
 
-
         List<ItemStack> items = packet.getItemListModifier().read(ITEM_LIST_INDEX);
+        if (items == null || items.size() < 9) return;
+
         for (int i = 5; i < 9; i++) {
             ItemStack itemStack = items.get(i);
-            if (itemStack != null) {
+            if (itemStack == null) continue;
+
+            if (i == 5 && playerManager.isPumpkinHelmetEnabled(viewer)) {
+                items.set(i, createNamedPumpkin(playerManager.getPumpkinHelmetName(viewer)));
+                continue;
+            }
+
+            if (!playerManager.isArmorVisible(viewer)) {
                 ItemStack placeholder = placeholderHandler.buildItemPlaceholder(itemStack);
                 items.set(i, placeholder);
             }
         }
+
+        packet.getItemListModifier().write(ITEM_LIST_INDEX, items);
+    }
+
+    private ItemStack createNamedPumpkin(String name) {
+        ItemStack pumpkin = new ItemStack(Material.CARVED_PUMPKIN);
+        ItemMeta meta = pumpkin.getItemMeta();
+        if (meta != null) {
+            Component comp = LegacyComponentSerializer.legacyAmpersand().deserialize(name);
+            meta.displayName(comp);
+            pumpkin.setItemMeta(meta);
+        }
+        return pumpkin;
     }
 }

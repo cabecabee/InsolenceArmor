@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArmorUpdateHandler {
@@ -42,7 +43,7 @@ public class ArmorUpdateHandler {
 
     public void updateSelf(Player player) {
         PlayerInventory inv = player.getInventory();
-        for(int i = 5; i<=8;i++) {
+        for (int i = 5; i <= 8; i++) {
             PacketContainer packetSelf = protocolManager.createPacket(PacketType.Play.Server.SET_SLOT);
 
             packetSelf.getIntegers().write(SET_SLOT_$WINDOW_ID_INDEX, 0);
@@ -60,7 +61,8 @@ public class ArmorUpdateHandler {
         packetOthers.getIntegers().write(ENTITY_EQUIPMENT_$ENTITY_ID_INDEX, player.getEntityId());
 
         PlayerInventory inv = player.getInventory();
-        List<Pair<EnumWrappers.ItemSlot, ItemStack>> pairList = packetOthers.getSlotStackPairLists().read(0);
+
+        List<Pair<EnumWrappers.ItemSlot, ItemStack>> pairList = new ArrayList<>();
         pairList.add(new Pair<>(EnumWrappers.ItemSlot.HEAD, ProtocolUtil.getArmor(ProtocolUtil.ArmorType.HELMET, inv)));
         pairList.add(new Pair<>(EnumWrappers.ItemSlot.CHEST, ProtocolUtil.getArmor(ProtocolUtil.ArmorType.CHEST, inv)));
         pairList.add(new Pair<>(EnumWrappers.ItemSlot.LEGS, ProtocolUtil.getArmor(ProtocolUtil.ArmorType.LEGGS, inv)));
